@@ -22,8 +22,4 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use((req, res) => {
-  res.status(404).json({ message: 'Запрашиваемый ресурс не найден' });
-});
-
 app.listen(PORT);
