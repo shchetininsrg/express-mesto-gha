@@ -15,22 +15,26 @@ module.exports.createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   bcrypt.hash(password, 10)
-    .then((hash) => {
-      User.create({
-        name, about, avatar, email, password: hash,
-      })
-        .then((user) => res.status(CREATED_SUCCESS).send({
-          name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
-        }))
-        .catch((err) => {
-          if (err.name === 'ValidationError') {
-            next(new BadRequestError('Переданы некорректные данные'));
-          } else if (err.code === 11000) {
-            next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
-          } else {
-            next(err);
-          }
-        });
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    }))
+    .then((user) => {
+      res.status(CREATED_SUCCESS).send({
+        name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
+      });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь существует'));
+      } else {
+        next(err);
+      }
     });
 };
 module.exports.getUsers = (req, res, next) => {
