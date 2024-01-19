@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
       message: 'Некорректная ссылка',
     },
   },
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
   email: {
     type: String,
     required: true,
@@ -32,12 +37,6 @@ const userSchema = new mongoose.Schema({
       validator: (v) => isEmail(v),
       message: 'Некорректная почта',
     },
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: [8, 'Минимальная длина пароля - 1'],
-    select: false,
   },
 });
 
