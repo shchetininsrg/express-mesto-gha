@@ -22,11 +22,6 @@ userRouter.patch('/me/avatar', celebrate({
     avatar: Joi.string().required().pattern(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/),
   }),
 }), updateUserAvatar);
-userRouter.get('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-  }),
-}), getCurrentUser);
+userRouter.get('/me', getCurrentUser);
 
 module.exports = userRouter;
