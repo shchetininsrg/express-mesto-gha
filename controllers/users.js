@@ -101,9 +101,15 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
+  const id = req.user._id;
+  User.findById(id)
     .then((user) => {
-      res.status(200).send(user);
+      if (!user) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.send({
+        name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
+      });
     })
     .catch(next);
 };
