@@ -1,9 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const {
-  SERVER_ERROR, CREATED_SUCCESS,
-} = require('../utils/constantErrors');
+const { CREATED_SUCCESS } = require('../utils/constantErrors');
 
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
@@ -102,8 +100,10 @@ module.exports.login = (req, res, next) => {
     });
 };
 
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => res.send(user))
-    .catch(() => res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' }));
+    .then((user) => {
+      res.send(user);
+    })
+    .catch(next);
 };
