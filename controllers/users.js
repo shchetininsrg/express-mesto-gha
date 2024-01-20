@@ -28,10 +28,10 @@ module.exports.createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
+      } else if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
-      } else if (err.code === 11000) {
-        next(new ConflictError('Пользователь существует'));
       } else {
         next(err);
       }
@@ -47,7 +47,7 @@ module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        throw new NotFoundError('Пользователь не найден');
       }
       res.send(user);
     })
@@ -95,7 +95,7 @@ module.exports.login = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.name === 'DocumentNotFoundError') {
-        throw new UnauthorizedError('Неправильные почта или пароль');
+        next(new UnauthorizedError('Неправильные почта или пароль'));
       } else {
         next(err);
       }

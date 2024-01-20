@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'У пользователя должен быть пароль'],
     select: false,
   },
   email: {
