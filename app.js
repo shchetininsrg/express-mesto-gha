@@ -2,9 +2,9 @@ const express = require('express');
 const { errors, celebrate, Joi } = require('celebrate');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { NOT_FOUND } = require('./utils/constantErrors');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 
@@ -34,8 +34,8 @@ app.post('/signup', celebrate({
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
-app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Запрашиваемый ресурс не найден' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
 });
 
 app.use(errors());

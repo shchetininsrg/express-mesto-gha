@@ -36,14 +36,14 @@ module.exports.deleteCard = (req, res, next) => {
       card.deleteOne()
         .then(() => res.send({ message: 'Карточка удалена' }))
         .catch((err) => {
-          next(err);
-        })
-        .catch((err) => {
           if (err.name === 'CastError') {
             next(new BadRequestError('Переданы некорректные данные'));
           } else {
             next(err);
           }
+        })
+        .catch((err) => {
+          next(err);
         });
     });
 };

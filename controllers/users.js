@@ -28,11 +28,12 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.code === 11000) {
         next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
-      } else if (err.name === 'ValidationError') {
+        return;
+      } if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 module.exports.getUsers = (req, res, next) => {
@@ -58,6 +59,7 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Пользователь не найден'));
+        return;
       }
       res.send({
         name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
@@ -66,6 +68,7 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
+        return;
       }
       next(err);
     });
@@ -77,6 +80,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
+        return;
       }
       next(err);
     });
@@ -92,11 +96,12 @@ module.exports.login = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
-      } else if (err.name === 'DocumentNotFoundError') {
+        return;
+      } if (err.code === 401) {
         next(new UnauthorizedError('Неправильные почта или пароль'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
